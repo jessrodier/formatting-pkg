@@ -1,0 +1,247 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // build tasks
+    {
+      "label": "build",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build-DataTransfer", "build-application", "build-tests"],
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "build-application",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build-WilsonLyzers.Core", "build-WilsonLyzers.Infrastructure", "build-WilsonLyzers.WebAPI"],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "build-WilsonLyzers.Core",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["build", "${workspaceFolder}/WilsonLyzers.Core/WilsonLyzers.Core.csproj", "/property:GenerateFullPaths=true", "/consoleloggerparameters:NoSummary", "--interactive"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-WilsonLyzers.Infrastructure",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/WilsonLyzers.Infrastructure/WilsonLyzers.Infrastructure.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "--interactive"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-WilsonLyzers.WebAPI",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/WilsonLyzers.WebAPI/WilsonLyzers.WebAPI.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "--interactive"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-tests",
+      "dependsOn": ["build-WilsonLyzers.FunctionalTests", "build-WilsonLyzers.IntegrationTests", "build-WilsonLyzers.UnitTests"],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "build-WilsonLyzers.FunctionalTests",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["build", "${workspaceFolder}/tests/WilsonLyzers.FunctionalTests/WilsonLyzers.FunctionalTests.csproj"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-WilsonLyzers.IntegrationTests",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["build", "${workspaceFolder}/tests/WilsonLyzers.IntegrationTests/WilsonLyzers.IntegrationTests.csproj"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-WilsonLyzers.UnitTests",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["build", "${workspaceFolder}/tests/WilsonLyzers.UnitTests/WilsonLyzers.UnitTests.csproj"],
+      "problemMatcher": "$msCompile"
+    },
+
+    // test tasks
+    {
+      "label": "test-all",
+      "group": "test",
+      "dependsOn": ["test-WilsonLyzers.FunctionalTests", "test-WilsonLyzers.IntegrationTests", "test-WilsonLyzers.UnitTests"],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "test-WilsonLyzers.FunctionalTests",
+      "command": "dotnet",
+      "type": "process",
+      "group": "test",
+      "args": ["test", "${workspaceFolder}/tests/WilsonLyzers.FunctionalTests/WilsonLyzers.FunctionalTests.csproj"],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test-WilsonLyzers.IntegrationTests",
+      "command": "dotnet",
+      "type": "process",
+      "group": "test",
+      "args": ["test", "${workspaceFolder}/tests/WilsonLyzers.IntegrationTests/WilsonLyzers.IntegrationTests.csproj"],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Unit Tests",
+      "group": "test",
+      "dependsOrder": "sequence",
+      "dependsOn": ["run-test: UnitTests", "coverage-report: UnitTests"],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "run-test: UnitTests",
+      "command": "dotnet",
+      "type": "process",
+      "group": "test",
+      "args": [
+        "test",
+        "${workspaceFolder}/tests/WilsonLyzers.UnitTests/WilsonLyzers.UnitTests.csproj",
+        "/p:CollectCoverage=true",
+        "/p:CoverletOutputFormat=opencover",
+        "/p:CoverletOutput=.results/UnitTests.opencover.xml",
+        "/p:ExcludeByFile=\"[*Module.*]*\"",
+        "/p:SkipAutoProps=true"
+      ],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "coverage-report: UnitTests",
+      "command": "reportgenerator",
+      "type": "process",
+      "args": [
+        "-reports:${workspaceFolder}/tests/WilsonLyzers.UnitTests/.results/UnitTests.opencover.net6.0.xml",
+        "-targetdir:${workspaceFolder}/tests/WilsonLyzers.UnitTests/.results/coverage-report",
+        "-reporttypes:HTML"
+      ],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+
+    //data transfer
+    {
+      "label": "build-DataTransfer",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/WilsonLyzers.DataTransfer/WilsonLyzers.DataTransfer.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "--interactive"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+
+    // used by launch.json
+    {
+      "label": "launch-pretasks",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build-application", "launch-clientPrep"],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "launch-pretasks-localNuget",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build-application-localNuget", "launch-clientPrep"],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "build-application-localNuget",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build-DataTransfer-localNuget", "build-WilsonLyzers.Core-localNuget", "build-WilsonLyzers.Infrastructure-localNuget", "build-WilsonLyzers.WebAPI-localNuget"],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "build-DataTransfer-localNuget",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/WilsonLyzers.DataTransfer/WilsonLyzers.DataTransfer.csproj",
+        "-c",
+        "LocalNuget",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-WilsonLyzers.Core-localNuget",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/WilsonLyzers.Core/WilsonLyzers.Core.csproj",
+        "-c",
+        "LocalNuget",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-WilsonLyzers.Infrastructure-localNuget",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/WilsonLyzers.Infrastructure/WilsonLyzers.Infrastructure.csproj",
+        "-c",
+        "LocalNuget",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-WilsonLyzers.WebAPI-localNuget",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/WilsonLyzers.WebAPI/WilsonLyzers.WebAPI.csproj",
+        "-c",
+        "LocalNuget",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "launch-clientPrep",
+      "type": "shell",
+      "command": "cd WilsonLyzers.WebUI && npm i"
+    }
+  ]
+}
